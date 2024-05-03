@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHYZIGS by biswarupa - Online Exam Portal</title>
+    <style>
+        /* CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5dc; /* Beige */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .header {
+            background-color: #800000; /* Brownish Maroon */
+            color: #fff;
+            padding: 20px;
+            border: #ecedf0;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .topics {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 0 20px;
+            background-color: #800000; /* Brownish Maroon */
+            z-index: 9999;
+        }
+        .topic {
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-align: center;
+            width: calc(33.33% - 10px); /* Adjust for margin */
+        }
+        .modal {
+            background-color: #7b3d1e; /* Darker Brownish Maroon */
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            width: 60%;
+            z-index: 0; /* Ensure modal appears below header and topics */
+            position: absolute;
+            margin-top: 300px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: none;
+        }
+        .modal.active {
+            display: block;
+        }
+        .modal p {
+            margin-top: 0;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+        }
+        .option {
+            margin-bottom: 10px;
+        }
+        .option input[type="radio"] {
+            display: none;
+        }
+        .option label {
+            background-color: #fff;
+            color: #000;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+        }
+        .option label:hover {
+            background-color: #ccc;
+        }
+        .option input[type="radio"]:checked + label {
+            background-color: #800000; /* Brownish Maroon */
+            color: #fff;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .btn {
+            background-color: #f2d4a2; /* Brownish Maroon */
+            color: #0b0606;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+        .btn:hover {
+            background-color: #500000; /* Darker Maroon */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.12);
+        }
+        .btn.back-home {
+            background-color:#f2d4a2 ; /* Brownish Maroon */
+            color: #1b0c0c;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+        .btn.back-home:hover {
+            background-color: #d9cc91; /* Darker Maroon */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.12);
+        }
+        .timer {
+            text-align: center;
+            font-size: 20px;
+            background-color: #800000; /* Brownish Maroon */
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-top: 10px; /* Adjusted */
+            margin-bottom: 20px; /* Added */
+            width: 60%; /* Adjusted */
+        }
+        .results-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+        .results-content {
+            background-color: #fff; /* White background */
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .results-content h2 {
+            margin-top: 0;
+            color: #800000; /* Brownish Maroon */
+        }
+        .results-content p {
+            margin-bottom: 20px;
+        }
+        .close-btn {
+            background-color: #f0bd96; /* Brownish Maroon */
+            color: #090303;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .close-btn:hover {
+            background-color: #500000; /* Darker Maroon */
+        }
+
+        /* New button style */
+        .btn-return-home {
+            background-color: #800000; /* Brownish Maroon */
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-return-home:hover {
+            background-color: #e8dcb8; /* Darker Maroon */
+        }
+        /* Calculator styles */
+        .calculator-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
+        .calculator-container iframe {
+            width: 300px;
+            height: 400px;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">PHYZIGS by swagat - Online Exam Portal</div>
+
+    <!-- Topic Selection -->
+    <div class="topics">
+        <div class="topic">Topic 1: Physics</div>
+        <div class="topic">Topic 2: Chemistry</div>
+        <div class="topic">Topic 3: Biology</div>
+    </div>
+
+    <!-- Confirmation dialog -->
+    <div class="timer" id="timer">
+        <button class="btn start-exam" onclick="confirmStartExam()">Start Exam</button>
+        <button class="btn start-exam" onclick="returnToHomePage()">Return to Home Page</button>
+    </div>
+
+  
+    
+    
+    <div class="modal" id="question1">
+        <p>Question 1: What is the term used to describe a push or a pull on an object?</p>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="option1" name="answer1" value="Motion">
+                <label for="option1">Motion</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option2" name="answer1" value="Energy">
+                <label for="option2">Energy</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option3" name="answer1" value="Force">
+                <label for="option3">Force</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option4" name="answer1" value="Velocity">
+                <label for="option4">Velocity</label>
+            </div>
+        </div>
+        <div class="btn-container" id="btnContainer1">
+        <button class="btn" onclick="showNextQuestion('question2')">next</button>
+            <button class="btn" onclick="showNextQuestion('question0')">Previous</button>
+            <button class="btn" onclick="toggleCalculator()">Calculator</button>
+        </div>
+    </div>
+    <div class="modal" id="question2">
+        <p>Question 2: When an object moves faster than another, it means it covers:</p>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="option5" name="answer2" value="Less distance in the same time">
+                <label for="option5">Less distance in the same time</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option6" name="answer2" value="More distance in the same time">
+                <label for="option6">More distance in the same time</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option7" name="answer2" value="Less distance in more time">
+                <label for="option7">Less distance in more time</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option8" name="answer2" value="More distance in less time">
+                <label for="option8">More distance in less time</label>
+            </div>
+        </div>
+        <div class="btn-container" id="btnContainer2">
+        <button class="btn" onclick="showNextQuestion('question3')">next</button>
+            <button class="btn" onclick="showNextQuestion('question1')">Previous</button>
+            <button class="btn" onclick="toggleCalculator()">Calculator</button>
+        </div>
+    </div>
+    <div class="modal" id="question3">
+        <p>Question 3: What does the distance moved by an object in unit time indicate?</p>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="option9" name="answer3" value="Speed">
+                <label for="option9">Speed</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option10" name="answer3" value="Force">
+                <label for="option10">Force</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option11" name="answer3" value="Acceleration">
+                <label for="option11">Acceleration</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option12" name="answer3" value="Momentum">
+                <label for="option12">Momentum</label>
+            </div>
+        </div>
+        <div class="btn-container" id="btnContainer3">
+        <button class="btn" onclick="showNextQuestion('question4')">next</button>
+            <button class="btn" onclick="showNextQuestion('question2')">Previous</button>
+            <button class="btn" onclick="toggleCalculator()">Calculator</button>
+        </div>
+    </div>
+    <div class="modal" id="question4">
+        <p>Question 4: What can make an object slow down or change its direction of motion?</p>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="option13" name="answer4" value="Force">
+                <label for="option13">Force</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option14" name="answer4" value="Friction">
+                <label for="option14">Friction</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option15" name="answer4" value="Gravity">
+                <label for="option15">Gravity</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option16" name="answer4" value="Inertia">
+                <label for="option16">Inertia</label>
+            </div>
+        </div>
+        <div class="btn-container" id="btnContainer4">
+        <button class="btn" onclick="showNextQuestion('question5')">next</button>
+            <button class="btn" onclick="showNextQuestion('question3')">Previous</button>
+            <button class="btn" onclick="toggleCalculator()">Calculator</button>
+        </div>
+    </div>
+    <div class="modal" id="question5">
+        <p>Question 5: Which action involves both pushing and pulling?</p>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="option17" name="answer5" value="Opening a door">
+                <label for="option17">Opening a door</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option18" name="answer5" value="Shutting a door">
+                <label for="option18">Shutting a door</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option19" name="answer5" value="Drawing water from a well">
+                <label for="option19">Drawing water from a well</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option20" name="answer5" value="Moving a loaded cart">
+                <label for="option20">Moving a loaded cart</label>
+            </div>
+        </div>
+        <div class="btn-container" id="btnContainer5">
+        <button class="btn" onclick="showNextQuestion('question6')">next</button>
+            <button class="btn" onclick="showNextQuestion('question4')">Previous</button>
+            <button class="btn" onclick="toggleCalculator()">Calculator</button>
+        </div>
+    </div>
+    <div class="modal" id="question6">
+        <p>Question 6: According to the text, what is necessary to move an object?</p>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="option21" name="answer6" value="Push">
+                <label for="option21">Push</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option22" name="answer6" value="Pull">
+                <label for="option22">Pull</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option23" name="answer6" value="Both push and pull" >
+                <label for="option23">Both push and pull</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option24" name="answer6" value="None of the above">
+                <label for="option24">None of the above</label>
+            </div>
+        </div>
+        <div class="btn-container" id="btnContainer6">
+        <button class="btn" onclick="showNextQuestion('question7')">next</button>
+            <button class="btn" onclick="showNextQuestion('question5')">Previous</button>
+            <button class="btn" onclick="toggleCalculator()">Calculator</button>
+        </div>
+    </div>
+    <div class="modal" id="question7">
+        <p>Question 7: In which situation does a force come into play?</p>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="option25" name="answer7" value="When there is no interaction">
+                <label for="option25">When there is no interaction</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option26" name="answer7" value="When at least two objects interact">
+                <label for="option26">When at least two objects interact</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option27" name="answer7" value="When an object is stationary">
+                <label for="option27">When an object is stationary</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option28" name="answer7" value="When an object is in motion">
+                <label for="option28">When an object is in motion</label>
+            </div>
+        </div>
+        <div class="btn-container" id="btnContainer7">
+        <button class="btn" onclick="showNextQuestion('question8')">next</button>
+            <button class="btn" onclick="showNextQuestion('question6')">Previous</button>
+            <button class="btn" onclick="toggleCalculator()">Calculator</button>
+        </div>
+    </div>
+    <div class="modal" id="question8">
+        <p>Question 8: What happens when two forces act in opposite directions on an object?</p>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="option29" name="answer8" value="They cancel each other out" >
+                <label for="option29">They cancel each other out</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option30" name="answer8" value="They add up">
+                <label for="option30">They add up</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option31" name="answer8" value="They change direction">
+                <label for="option31">They change direction</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option32" name="answer8" value="They increase in magnitude">
+                <label for="option32">They increase in magnitude</label>
+            </div>
+        </div>
+        <div class="btn-container" id="btnContainer8">
+        <button class="btn" onclick="showNextQuestion('question9')">next</button>
+            <button class="btn" onclick="showNextQuestion('question7')">Previous</button>
+            <button class="btn" onclick="toggleCalculator()">Calculator</button>
+        </div>
+    </div>
+    <div class="modal" id="question9">
+        <p>Question 9: Which of the following can change the state of motion of an object?</p>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="option33" name="answer9" value="Speed">
+                <label for="option33">Speed</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option34" name="answer9" value="Direction">
+                <label for="option34">Direction</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option35" name="answer9" value="Both speed and direction" >
+                <label for="option35">Both speed and direction</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option36" name="answer9" value="None of the above">
+                <label for="option36">None of the above</label>
+            </div>
+        </div>
+        <div class="btn-container" id="btnContainer9">
+        <button class="btn" onclick="showNextQuestion('question10')">next</button>
+            <button class="btn" onclick="showNextQuestion('question8')">Previous</button>
+            <button class="btn" onclick="toggleCalculator()">Calculator</button>
+        </div>
+    </div>
+    <div class="modal" id="question10">
+        <p>Question 10: What happens to the speed of a moving object when a force is applied in the direction of its motion?</p>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="option37" name="answer10" value="It increases">
+                <label for="option37">It increases</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option38" name="answer10" value="It decreases">
+                <label for="option38">It decreases</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option39" name="answer10" value="It remains the same">
+                <label for="option39">It remains the same</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option40" name="answer10" value="It becomes zero">
+                <label for="option40">It becomes zero</label>
+            </div>
+        </div>
+        <div class="btn-container" id="btnContainer10">
+        <button class="btn" onclick="showNextQuestion('question11')">next</button>
+            <button class="btn" onclick="showNextQuestion('question9')">Previous</button>
+            <button class="btn" onclick="toggleCalculator()">Calculator</button>
+        </div>
+    </div>
+    <div class="modal" id="question11">
+        <p>Question 11: What term describes a change in the state of motion of an object?</p>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="option41" name="answer11" value="Force">
+                <label for="option41">Force</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option42" name="answer11" value="Acceleration" >
+                <label for="option42">Acceleration</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option43" name="answer11" value="Inertia">
+                <label for="option43">Inertia</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option44" name="answer11" value="Momentum">
+                <label for="option44">Momentum</label>
+            </div>
+        </div>
+        <div class="btn-container" id="btnContainer11">
+        <button class="btn" onclick="showNextQuestion('question12')">next</button>
+            <button class="btn" onclick="showNextQuestion('question10')">Previous</button>
+            <button class="btn" onclick="toggleCalculator()">Calculator</button>
+        </div>
+    </div>
+    <div class="modal" id="question12">
+        <p>Question 12: In a tug-of-war game, what determines the direction of movement of the rope?</p>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="option45" name="answer12" value="The strongest team">
+                <label for="option45">The strongest team</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option46" name="answer12" value="The weakest team">
+                <label for="option46">The weakest team</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option47" name="answer12" value="The team with more members">
+                <label for="option47">The team with more members</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option48" name="answer12" value="The net force applied" >
+                <label for="option48">The net force applied</label>
+            </div>
+        </div>
+        <div class="btn-container" id="btnContainer12">
+        <button class="btn" onclick="showNextQuestion('question13')">next</button>
+            <button class="btn" onclick="showNextQuestion('question11')">Previous</button>
+            <button class="btn" onclick="toggleCalculator()">Calculator</button>
+        </div>
+    </div>
+    <div class="modal" id="question13">
+        <p>Question 13: What can a force do to the shape of an object?</p>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="option49" name="answer13" value="Change it" >
+                <label for="option49">Change it</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option50" name="answer13" value="Increase it">
+                <label for="option50">Increase it</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option51" name="answer13" value="Decrease it">
+                <label for="option51">Decrease it</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option52" name="answer13" value="None of the above">
+                <label for="option52">None of the above</label>
+            </div>
+        </div>
+        <div class="btn-container" id="btnContainer13">
+        <button class="btn" onclick="showNextQuestion('question14')">next</button>
+            <button class="btn" onclick="showNextQuestion('question12')">Previous</button>
+            <button class="btn" onclick="toggleCalculator()">Calculator</button>
+        </div>
+    </div>
+    <div class="modal" id="question14">
+        <p>Question 14: What happens to the shape of an inflated balloon when pressed between palms?</p>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="option53" name="answer14" value="It expands">
+                <label for="option53">It expands</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option54" name="answer14" value="It contracts">
+                <label for="option54">It contracts</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option55" name="answer14" value="It changes shape" >
+                <label for="option55">It changes shape</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option56" name="answer14" value="It remains the same">
+                <label for="option56">It remains the same</label>
+            </div>
+        </div>
+        <div class="btn-container" id="btnContainer14">
+        <button class="btn" onclick="showNextQuestion('question15')">next</button>
+            <button class="btn" onclick="showNextQuestion('question13')">Previous</button>
+            <button class="btn" onclick="toggleCalculator()">Calculator</button>
+        </div>
+    </div>
+    <div class="modal" id="question15">
+        <p>Question 15: When does a force cause a change in the state of motion of an object?</p>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="option57" name="answer15" value="Always">
+                <label for="option57">Always</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option58" name="answer15" value="Only when the force is applied" >
+                <label for="option58">Only when the force is applied</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option59" name="answer15" value="Only when the force is applied continuously">
+                <label for="option59">Only when the force is applied continuously</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option60" name="answer15" value="Only when the force is greater than a certain value">
+                <label for="option60">Only when the force is greater than a certain value</label>
+            </div>
+        </div>
+        <div class="btn-container" id="btnContainer15">
+        <button class="btn" onclick="showNextQuestion('question16')">next</button>
+            <button class="btn" onclick="showNextQuestion('question14')">Previous</button>
+            <button class="btn" onclick="toggleCalculator()">Calculator</button>
+        </div>
+    </div>
+    <div class="modal" id="question16">
+        <p>Question 16: Which of the following is NOT a possible effect of a force?</p>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="option61" name="answer16" value="Changing the direction of motion">
+                <label for="option61">Changing the direction of motion</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option62" name="answer16" value="Changing the shape of an object">
+                <label for="option62">Changing the shape of an object</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option63" name="answer16" value="Changing the color of an object" >
+                <label for="option63">Changing the color of an object</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option64" name="answer16" value="Changing the speed of an object">
+                <label for="option64">Changing the speed of an object</label>
+            </div>
+        </div>
+        <div class="btn-container" id="btnContainer16">
+        <button class="btn" onclick="showNextQuestion('question17')">next</button>
+            <button class="btn" onclick="showNextQuestion('question15')">Previous</button>
+            <button class="btn" onclick="toggleCalculator()">Calculator</button>
+        </div>
+    </div>
+    <div class="modal" id="question17">
+        <p>Question 17: What term is used to describe the state of zero speed of an object?</p>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="option65" name="answer17" value="Rest" >
+                <label for="option65">Rest</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option66" name="answer17" value="Motion">
+                <label for="option66">Motion</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option67" name="answer17" value="Acceleration">
+                <label for="option67">Acceleration</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option68" name="answer17" value="Inertia">
+                <label for="option68">Inertia</label>
+            </div>
+        </div>
+        <div class="btn-container" id="btnContainer17">
+        <button class="btn" onclick="showNextQuestion('question18')">next</button>
+            <button class="btn" onclick="showNextQuestion('question16')">Previous</button>
+            <button class="btn" onclick="toggleCalculator()">Calculator</button>
+        </div>
+    </div>
+    <div class="modal" id="question18">
+        <p>Question 18: When does a force not result in a change in the state of motion of an object?</p>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="option69" name="answer18" value="When the object is stationary">
+                <label for="option69">When the object is stationary</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option70" name="answer18" value="When the force is applied continuously">
+                <label for="option70">When the force is applied continuously</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option71" name="answer18" value="When the object is already in motion">
+                <label for="option71">When the object is already in motion</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option72" name="answer18" value="When the force is greater than a certain value" >
+                <label for="option72">When the force is greater than a certain value</label>
+            </div>
+        </div>
+        <div class="btn-container" id="btnContainer18">
+        <button class="btn" onclick="showNextQuestion('question19')">next</button>
+            <button class="btn" onclick="showNextQuestion('question17')">Previous</button>
+            <button class="btn" onclick="toggleCalculator()">Calculator</button>
+        </div>
+    </div>
+    <div class="modal" id="question19">
+        <p>Question 19: What does the state of motion of an object describe?</p>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="option73" name="answer19" value="Only its speed">
+                <label for="option73">Only its speed</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option74" name="answer19" value="Only its direction">
+                <label for="option74">Only its direction</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option75" name="answer19" value="Both its speed and direction" >
+                <label for="option75">Both its speed and direction</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option76" name="answer19" value="None of the above">
+                <label for="option76">None of the above</label>
+            </div>
+        </div>
+        <div class="btn-container" id="btnContainer19">
+        <button class="btn" onclick="showNextQuestion('question20')">next</button>
+            <button class="btn" onclick="showNextQuestion('question18')">Previous</button>
+            <button class="btn" onclick="toggleCalculator()">Calculator</button>
+        </div>
+    </div>
+    <div class="modal" id="question20">
+        <p>Question 20: What determines the strength of a force?</p>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="option77" name="answer20" value="Its direction">
+                <label for="option77">Its direction</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option78" name="answer20" value="Its magnitude" >
+                <label for="option78">Its magnitude</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option79" name="answer20" value="Its shape">
+                <label for="option79">Its shape</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option80" name="answer20" value="Its speed">
+                <label for="option80">Its speed</label>
+            </div>
+        </div>
+        <div class="btn-container" id="btnContainer20">
+        <button class="btn" onclick="showNextQuestion('question21')">next</button>
+            <button class="btn" onclick="showNextQuestion('question19')">Previous</button>
+            <button class="btn" onclick="toggleCalculator()">Calculator</button>
+        </div>
+    </div>
+    <div class="modal" id="question21">
+        <p>Question 21: In which scenario does a force NOT come into play?</p>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="option81" name="answer21" value="A man pushing a car">
+                <label for="option81">A man pushing a car</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option82" name="answer21" value="A person standing still" >
+                <label for="option82">A person standing still</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option83" name="answer21" value="A ball rolling down a hill">
+                <label for="option83">A ball rolling down a hill</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option84" name="answer21" value="A magnet attracting a piece of iron">
+                <label for="option84">A magnet attracting a piece of iron</label>
+            </div>
+        </div>
+        <div class="btn-container" id="btnContainer21">
+        <button class="btn" onclick="showNextQuestion('question22')">next</button>
+            <button class="btn" onclick="showNextQuestion('question20')">Previous</button>
+            <button class="btn" onclick="toggleCalculator()">Calculator</button>
+        </div>
+    </div>
+    <div class="modal" id="question22">
+        <p>Question 22: What happens to the speed of a moving object when a force is applied opposite to its motion?</p>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="option85" name="answer22" value="It increases">
+                <label for="option85">It increases</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option86" name="answer22" value="It decreases" >
+                <label for="option86">It decreases</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option87" name="answer22" value="It remains the same">
+                <label for="option87">It remains the same</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option88" name="answer22" value="It becomes zero">
+                <label for="option88">It becomes zero</label>
+            </div>
+        </div>
+        <div class="btn-container" id="btnContainer22">
+        <button class="btn" onclick="showNextQuestion('question23')">next</button>
+            <button class="btn" onclick="showNextQuestion('question21')">Previous</button>
+            <button class="btn" onclick="toggleCalculator()">Calculator</button>
+        </div>
+    </div>
+    <div class="modal" id="question23">
+        <p>Question 23: What determines the direction of movement in a tug-of-war game?</p>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="option89" name="answer23" value="The team with the most players">
+                <label for="option89">The team with the most players</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option90" name="answer23" value="The team with the least players">
+                <label for="option90">The team with the least players</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option91" name="answer23" value="The net force applied" >
+                <label for="option91">The net force applied</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option92" name="answer23" value="The referee's decision">
+                <label for="option92">The referee's decision</label>
+            </div>
+        </div>
+        <div class="btn-container" id="btnContainer23">
+        <button class="btn" onclick="showNextQuestion('question24')">next</button>
+            <button class="btn" onclick="showNextQuestion('question22')">Previous</button>
+            <button class="btn" onclick="toggleCalculator()">Calculator</button>
+        </div>
+    </div>
+    <div class="modal" id="question24">
+        <p>Question 24: Which of the following is NOT an effect of a force on an object?</p>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="option93" name="answer24" value="Changing its shape">
+                <label for="option93">Changing its shape</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option94" name="answer24" value="Changing its color" >
+                <label for="option94">Changing its color</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option95" name="answer24" value="Changing its speed">
+                <label for="option95">Changing its speed</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option96" name="answer24" value="Changing its direction of motion">
+                <label for="option96">Changing its direction of motion</label>
+            </div>
+        </div>
+        <div class="btn-container" id="btnContainer24">
+        <button class="btn" onclick="showNextQuestion('question25')">next</button>
+            <button class="btn" onclick="showNextQuestion('question23')">Previous</button>
+            <button class="btn" onclick="toggleCalculator()">Calculator</button>
+        </div>
+    </div>
+    <div class="modal" id="question25">
+        <p>Question 25: What does the magnitude of a force indicate?</p>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="option97" name="answer25" value="Its speed">
+                <label for="option97">Its speed</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option98" name="answer25" value="Its direction">
+                <label for="option98">Its direction</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option99" name="answer25" value="Its strength" >
+                <label for="option99">Its strength</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="option100" name="answer25" value="Its shape">
+                <label for="option100">Its shape</label>
+            </div>
+        </div>
+        <div class="btn-container" id="btnContainer25">
+        <button class="btn" onclick="openResultsModal()">submit</button>
+            <button class="btn" onclick="showNextQuestion('question24')">Previous</button>
+            <button class="btn" onclick="toggleCalculator()">Calculator</button>
+        </div>
+    </div>
+
+    
+
+    <!-- Results Modal -->
+    <div class="results-modal" id="resultsModal">
+        <div class="results-content" id="resultsContent">
+            <!-- Results content will be inserted here -->
+        </div>
+    </div>
+
+    <!-- Calculator -->
+    <div class="calculator-container" id="calculatorContainer" style="display: none;">
+        <button class="close-btn" onclick="closeCalculator()">Close Calculator</button>
+        <iframe src="https://www.calculator.net/" frameborder="0"></iframe>
+    </div>
+
+    <script>
+        var timerElement = document.getElementById('timer');
+        var totalTime = 600; // 10 seconds for testing
+        var minutes, seconds;
+        var interval;
+        var correctAnswers = 0;
+
+        function startTimer() {
+            interval = setInterval(function () {
+                minutes = Math.floor(totalTime / 60);
+                seconds = totalTime % 60;
+
+                var formattedMinutes = minutes < 10? '0' + minutes : minutes;
+                var formattedSeconds = seconds < 10? '0' + seconds : seconds;
+
+                timerElement.innerText = 'The exam will be automatically submitted after ' + formattedMinutes + ':' + formattedSeconds; // Updated timer text
+
+                if (totalTime <= 0) {
+                    clearInterval(interval);
+                    openResultsModal();
+                } else {
+                    totalTime--;
+                }
+            }, 1000);
+        }
+
+        function showNextQuestion(questionId) {
+            var currentQuestion = document.querySelector('.modal.active');
+            currentQuestion.classList.remove('active');
+
+            var nextQuestion = document.getElementById(questionId);
+            nextQuestion.classList.add('active');
+        }
+
+        function openResultsModal() {
+            var resultsModal = document.getElementById('resultsModal');
+            resultsModal.style.display = 'flex';
+            var answer1 = document.querySelector('input[name="answer1"]:checked');
+            var answer1 = document.querySelector('input[name="answer1"]:checked');
+var answer2 = document.querySelector('input[name="answer2"]:checked');
+var answer3 = document.querySelector('input[name="answer3"]:checked');
+var answer4 = document.querySelector('input[name="answer4"]:checked');
+var answer5 = document.querySelector('input[name="answer5"]:checked');
+var answer6 = document.querySelector('input[name="answer6"]:checked');
+var answer7 = document.querySelector('input[name="answer7"]:checked');
+var answer8 = document.querySelector('input[name="answer8"]:checked');
+var answer9 = document.querySelector('input[name="answer9"]:checked');
+var answer10 = document.querySelector('input[name="answer10"]:checked');
+var answer11 = document.querySelector('input[name="answer11"]:checked');
+var answer12 = document.querySelector('input[name="answer12"]:checked');
+var answer13 = document.querySelector('input[name="answer13"]:checked');
+var answer14 = document.querySelector('input[name="answer14"]:checked');
+var answer15 = document.querySelector('input[name="answer15"]:checked');
+var answer16 = document.querySelector('input[name="answer16"]:checked');
+var answer17 = document.querySelector('input[name="answer17"]:checked');
+var answer18 = document.querySelector('input[name="answer18"]:checked');
+var answer19 = document.querySelector('input[name="answer19"]:checked');
+var answer20 = document.querySelector('input[name="answer20"]:checked');
+var answer21 = document.querySelector('input[name="answer21"]:checked');
+var answer22 = document.querySelector('input[name="answer22"]:checked');
+var answer23 = document.querySelector('input[name="answer23"]:checked');
+var answer24 = document.querySelector('input[name="answer24"]:checked');
+var answer25 = document.querySelector('input[name="answer25"]:checked');
+
+if (answer1 && answer1.value === 'Force') correctAnswers++;
+if (answer2 && answer2.value === 'More distance in less time') correctAnswers++;
+if (answer3 && answer3.value === 'Speed') correctAnswers++;
+if (answer4 && answer4.value === 'Friction') correctAnswers++;
+if (answer5 && answer5.value === 'Both push and pull') correctAnswers++;
+if (answer6 && answer6.value === 'Both push and pull') correctAnswers++;
+if (answer7 && answer7.value === 'When at least two objects interact') correctAnswers++;
+if (answer8 && answer8.value === 'They cancel each other out') correctAnswers++;
+if (answer9 && answer9.value === 'Both speed and direction') correctAnswers++;
+if (answer10 && answer10.value === 'It increases') correctAnswers++;
+if (answer11 && answer11.value === 'Acceleration') correctAnswers++;
+if (answer12 && answer12.value === 'The net force applied') correctAnswers++;
+if (answer13 && answer13.value === 'Change it') correctAnswers++;
+if (answer14 && answer14.value === 'It changes shape') correctAnswers++;
+if (answer15 && answer15.value === 'Only when the force is applied continuously') correctAnswers++;
+if (answer16 && answer16.value === 'Changing the color of an object') correctAnswers++;
+if (answer17 && answer17.value === 'Rest') correctAnswers++;
+if (answer18 && answer18.value === 'When the object is already in motion') correctAnswers++;
+if (answer19 && answer19.value === 'Both its speed and direction') correctAnswers++;
+if (answer20 && answer20.value === 'Its magnitude') correctAnswers++;
+if (answer21 && answer21.value === 'A person standing still') correctAnswers++;
+if (answer22 && answer22.value === 'It decreases') correctAnswers++;
+if (answer23 && answer23.value === 'The net force applied') correctAnswers++;
+if (answer24 && answer24.value === 'Changing its color') correctAnswers++;
+if (answer25 && answer25.value === 'Its strength') correctAnswers++;
+
+// Here are the answers for the provided questions:
+// 1. c) Force
+// 2. d) More distance in less time
+// 3. a) Speed
+// 4. b) Friction
+// 5. c) Both push and pull
+// 6. c) Both push and pull
+// 7. b) When at least two objects interact
+// 8. a) They cancel each other out
+// 9. c) Both speed and direction
+// 10. a) It increases
+// 11. b) Acceleration
+// 12. d) The net force applied
+// 13. a) Change it
+// 14. c) It changes shape
+// 15. c) Only when the force is applied continuously
+// 16. c) Changing the color of an object
+// 17. a) Rest
+// 18. c) When the object is already in motion
+// 19. c) Both its speed and direction
+// 20. b) Its magnitude
+// 21. b) A person standing still
+// 22. b) It decreases
+// 23. c) The net force applied
+// 24. b) Changing its color
+// 25. c) Its strength
+
+        
+            var resultsContent = document.getElementById('resultsContent');
+            resultsContent.innerHTML = '<h2>Exam Completed!</h2>' +
+                                        '<p>Correctly Answered Questions: ' + correctAnswers + ' out of 25</p>' +
+                                        '<button class="btn" onclick="returnToHomePage()">Return to Home Page</button>' +
+                                        '<button class="btn" onclick="giveTestAgain()">Give Test Again</button>';
+        }
+
+        function closeResultsModal() {
+            var resultsModal = document.getElementById('resultsModal');
+            resultsModal.style.display = 'none';
+        }
+
+        function returnToHomePage() {
+            // Redirect to home page or perform necessary actions
+            alert("Redirecting to home page...");
+        }
+
+        function giveTestAgain() {
+            // Reload or reset the test to start again
+            alert("Refreshing the page to give the test again...");
+            location.reload();
+        }
+
+        function confirmStartExam() {
+            if (confirm("Are you sure you want to start the exam?")) {
+                startExam();
+            }
+        }
+
+        function startExam() {
+            // Show the first question
+            var firstQuestion = document.getElementById('question1');
+            firstQuestion.classList.add('active');
+            // Start the timer
+            startTimer();
+        }
+
+        function toggleCalculator() {
+            var calculatorContainer = document.getElementById('calculatorContainer');
+            if (calculatorContainer.style.display === 'none') {
+                calculatorContainer.style.display = 'block';
+            } else {
+                calculatorContainer.style.display = 'none';
+            }
+        }
+
+        function closeCalculator() {
+            var calculatorContainer = document.getElementById('calculatorContainer');
+            calculatorContainer.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
